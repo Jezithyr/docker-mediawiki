@@ -23,7 +23,7 @@ services:
       DEBUG: true
       MEDIAWIKI_SITE_NAME: "mediawiki"
       MEDIAWIKI_META_NAMESPACE: "mediawiki"
-      MEDIAWIKI_SITE_SERVER: "http//localhost"
+      MEDIAWIKI_SITE_SERVER: "http://localhost"
       MEDIAWIKI_ENABLE_EMAIL: true
       MEDIAWIKI_ENABLE_USER_EMAIL: true
       MEDIAWIKI_EMERGENCY_CONTACT: "apache@localhost"
