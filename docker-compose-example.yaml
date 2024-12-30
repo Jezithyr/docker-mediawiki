@@ -1,0 +1,53 @@
+# MediaWiki with MariaDB
+#
+# Access via "http://localhost:8080"
+#   (or "http://$(docker-machine ip):8080" if using docker-machine)
+services:
+  mediawiki:
+    #image: mediawiki
+    build: .
+    depends_on:
+      - database
+    restart: always
+    ports:
+      - 8080:80
+    links:
+      - database
+    volumes:
+      - ./.data/images:/var/www/html/images
+      - ./extensions:/var/www/html/extensions
+      - ./skins:/var/www/html/skins
+      - ./logo.png:/var/www/html/resources/assets/logo.png
+      - ./config/CustomSettings.php:/conf/CustomSettings.php
+    environment:
+      DEBUG: true
+      MEDIAWIKI_SITE_NAME: "mediawiki"
+      MEDIAWIKI_META_NAMESPACE: "mediawiki"
+      MEDIAWIKI_SITE_SERVER: "http//localhost"
+      MEDIAWIKI_ENABLE_EMAIL: true
+      MEDIAWIKI_ENABLE_USER_EMAIL: true
+      MEDIAWIKI_EMERGENCY_CONTACT: "apache@localhost"
+      MEDIAWIKI_PASSWORD_SENDER: "apache@localhost"
+      MEDIAWIKI_DB_NAME: "mediawiki"
+      MEDIAWIKI_DB_USER: "mediawiki"
+      MEDIAWIKI_DB_PASSWORD: "change_me_1234"
+      MEDIAWIKI_ENABLE_UPLOADS: true
+      MEDIAWIKI_ENABLE_INSTANT_COMMONS: true
+      MEDIAWIKI_SECRET_KEY: "Secure64CharRandomHere"
+      MEDIAWIKI_UPGRADE_KEY: "SecurePasswordForWebUpdates"
+      MEDIAWIKI_DEFAULT_SKIN: "timeless"
+      MEDIAWIKI_ENABLED_SKINS: "Timeless"
+      MEDIAWIKI_ENABLED_EXTENSIONS: ""
+      
+  # This key also defines the name of the database host used during setup instead of the default "localhost"
+  database:
+    image: mariadb
+    restart: always
+    environment:
+      # @see https://phabricator.wikimedia.org/source/mediawiki/browse/master/includes/DefaultSettings.php
+      MYSQL_DATABASE: mediawiki
+      MYSQL_USER: mediawiki
+      MYSQL_PASSWORD: 'change_me_1234'
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+    volumes:
+      - ./.db:/var/lib/mysql
