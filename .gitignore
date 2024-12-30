@@ -4,5 +4,5 @@
 #do not track docker-compose files to prevent accidental overwrites and secret leaks
 docker-compose.yaml
 #extentions/skins are installed automatically or manually and shouldn't be tracked by git
-extensions
-skins
+extensions/*
+skins/*
