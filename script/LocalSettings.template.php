@@ -164,11 +164,11 @@ $wgGroupPermissions["*"]["edit"] = filter_var(loadenv('MEDIAWIKI_ENABLE_PUB_EDIT
 ## names, e.g. 'vector' or 'monobook':
 $wgDefaultSkin = loadenv('MEDIAWIKI_DEFAULT_SKIN', "timeless");
 
-# Enabled skins.
-# The following skins were automatically enabled:
-#wfLoadSkin( 'MonoBook' );
-#wfLoadSkin( 'Timeless' );
-#wfLoadSkin( 'Vector' );
+if (filter_var(loadenv('MEDIAWIKI_MOBILE_FRONTEND_ENABLED', false), FILTER_VALIDATE_BOOLEAN)){
+	$wgDefaultMobileSkin = loadenv('MEDIAWIKI_DEFAULT_MOBILE_SKIN', "timeless");
+	wfLoadExtension('MobileFrontend');
+}
+
 
 
 $enabledSkinsRaw = loadenv('MEDIAWIKI_ENABLED_SKINS', "Timeless");
