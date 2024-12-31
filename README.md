@@ -1,7 +1,7 @@
 # A simple media wiki docker-compose stack.
 
 ## To use:
-1) Create a copy of docker-compose-example.yaml, and rename to it docker-compose.yaml
+1) Create a copy of example-docker-compose.yaml, and rename to it docker-compose.yaml
 2) Configure your installation using the environment variables
 - Make sure to include http or https in MEDIAWIKI_SITE_SERVER !
 - Generate a secure 64-digit alphanumeric key for MEDIAWIKI_SECRET_KEY (You can also get one later from the generated LocalSettings.php)
