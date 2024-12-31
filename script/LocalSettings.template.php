@@ -90,7 +90,7 @@ if (!empty($wgSharedTablesRaw)) {
 unset($wgSharedTablesRaw);
 
 # MySQL specific settings
-$wgDBprefix = loadenv('MW_DB_PREFIX');
+$wgDBprefix = loadenv('MW_DB_PREFIX', "wiki_");
 $wgDBssl = false;
 
 # MySQL table options to use during installation or update
