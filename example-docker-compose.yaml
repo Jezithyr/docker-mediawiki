@@ -5,7 +5,7 @@
 services:
   mediawiki:
     #image: mediawiki
-    build: .
+    build: ./docker
     depends_on:
       - database
     restart: always
@@ -15,10 +15,10 @@ services:
       - database
     volumes:
       - images:/var/www/html/images
-      - ./extensions:/var/www/html/extensions
-      - ./skins:/var/www/html/skins
+      - ./volumes/extensions:/var/www/html/extensions
+      - ./volumes/skins:/var/www/html/skins
       - ./logo.png:/var/www/html/resources/assets/logo.png
-      - ./config:/conf
+      - ./config:/root/config
     environment:
       DEBUG: true
       MW_SITE_NAME: "mediawiki"
@@ -38,8 +38,7 @@ services:
       MW_DEFAULT_SKIN: "timeless"
       MW_ENABLED_SKINS: "Timeless"
       MW_ENABLED_EXTENSIONS: ""
-      
-  # This key also defines the name of the database host used during setup instead of the default "localhost"
+  ## If you rename this service you'll need to specify the databse service when using the db_shell script
   database:
     image: mariadb
     restart: always
@@ -49,6 +48,8 @@ services:
       MYSQL_USER: mediawiki
       MYSQL_PASSWORD: 'change_me_1234'
       MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+      ## If you want to access the database using the root user, you should comment out the above line, and set an appropriate password below
+      #MYSQL_ROOT_PASSWORD: 'definately_should_change_me'
     volumes:
       - db:/var/lib/mysql
 volumes:
