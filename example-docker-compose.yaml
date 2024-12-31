@@ -21,23 +21,23 @@ services:
       - ./config:/conf
     environment:
       DEBUG: true
-      MEDIAWIKI_SITE_NAME: "mediawiki"
-      MEDIAWIKI_META_NAMESPACE: "mediawiki"
-      MEDIAWIKI_SITE_SERVER: "http://localhost"
-      MEDIAWIKI_ENABLE_EMAIL: true
-      MEDIAWIKI_ENABLE_USER_EMAIL: true
-      MEDIAWIKI_EMERGENCY_CONTACT: "apache@localhost"
-      MEDIAWIKI_PASSWORD_SENDER: "apache@localhost"
-      MEDIAWIKI_DB_NAME: "mediawiki"
-      MEDIAWIKI_DB_USER: "mediawiki"
-      MEDIAWIKI_DB_PASSWORD: "change_me_1234"
-      MEDIAWIKI_ENABLE_UPLOADS: true
-      MEDIAWIKI_ENABLE_INSTANT_COMMONS: true
-      MEDIAWIKI_SECRET_KEY: "Secure64CharRandomHere"
-      MEDIAWIKI_UPGRADE_KEY: "SecurePasswordForWebUpdates"
-      MEDIAWIKI_DEFAULT_SKIN: "timeless"
-      MEDIAWIKI_ENABLED_SKINS: "Timeless"
-      MEDIAWIKI_ENABLED_EXTENSIONS: ""
+      MW_SITE_NAME: "mediawiki"
+      MW_META_NAMESPACE: "mediawiki"
+      MW_SITE_SERVER: "http://localhost"
+      MW_ENABLE_EMAIL: true
+      MW_ENABLE_USER_EMAIL: true
+      MW_EMERGENCY_CONTACT: "apache@localhost"
+      MW_PASSWORD_SENDER: "apache@localhost"
+      MW_DB_NAME: "mediawiki"
+      MW_DB_USER: "mediawiki"
+      MW_DB_PASSWORD: "change_me_1234"
+      MW_ENABLE_UPLOADS: true
+      MW_ENABLE_INSTANT_COMMONS: true
+      MW_SECRET_KEY: "Secure64CharRandomHere"
+      MW_UPGRADE_KEY: "SecurePasswordForWebUpdates"
+      MW_DEFAULT_SKIN: "timeless"
+      MW_ENABLED_SKINS: "Timeless"
+      MW_ENABLED_EXTENSIONS: ""
       
   # This key also defines the name of the database host used during setup instead of the default "localhost"
   database:
@@ -52,5 +52,5 @@ services:
     volumes:
       - db:/var/lib/mysql
 volumes:
-  - db:
-  - images:
+  db:
+  images:

@@ -22,9 +22,9 @@ function loadenv($envName, $default = "") {
 ## Uncomment this to disable output compression
 # $wgDisableOutputCompression = true;
 
-$wgSitename = loadenv('MEDIAWIKI_SITE_NAME', 'MediaWiki');
-if (getenv('MEDIAWIKI_META_NAMESPACE') !== false) {
-    $wgMetaNamespace = loadenv('MEDIAWIKI_META_NAMESPACE', $wgSitename);
+$wgSitename = loadenv('MW_SITE_NAME', 'MediaWiki');
+if (getenv('MW_META_NAMESPACE') !== false) {
+    $wgMetaNamespace = loadenv('MW_META_NAMESPACE', $wgSitename);
 }
 
 ## The URL base path to the directory containing the wiki;
@@ -32,47 +32,68 @@ if (getenv('MEDIAWIKI_META_NAMESPACE') !== false) {
 ## For more information on customizing the URLs
 ## (like /w/index.php/Page_title to /wiki/Page_title) please see:
 ## https://www.mediawiki.org/wiki/Manual:Short_URL
-$wgScriptPath = loadenv('MEDIAWIKI_SCRIPT_PATH');
+$wgScriptPath = loadenv('MW_SCRIPT_PATH');
 
 ## The protocol and server name to use in fully-qualified URLs
-$wgServer = loadenv('MEDIAWIKI_SITE_SERVER', '//localhost');
+$wgServer = loadenv('MW_SITE_SERVER', '//localhost');
 
 ## The URL path to static resources (images, scripts, etc.)
 $wgResourceBasePath = $wgScriptPath;
 
+$wgCookieDomain = loadenv('MW_COOKIE_DOMAIN', '');
+
+
+$logoPath = loadenv('MW_LOGO_PATH', "$wgResourceBasePath/resources/assets");
+$logoFilenameIcon = loadenv('MW_LOGO_ICON', "logo.png");
+$logoFilenameIcon = loadenv('MW_LOGO_1X', "logo.png");
+$logoFilenameIcon = loadenv('MW_LOGO_2X', "logo.png");
 ## The URL paths to the logo.  Make sure you change this from the default,
 ## or else you'll overwrite your logo when you upgrade!
 $wgLogos = [
-	'1x' => "$wgResourceBasePath/resources/assets/logo.png",
-	'2x' => "$wgResourceBasePath/resources/assets/logo.png",
-	'icon' => "$wgResourceBasePath/resources/assets/logo.png",
+	'icon' => "$logoPath/$MW_LOGO_ICON",
+	'1x' => "$logoPath/$MW_LOGO_1X",
+	'2x' => "$logoPath/$MW_LOGO_2X",
 ];
 
 ## UPO means: this is also a user preference option
 
-$wgEnableEmail = filter_var(loadenv('MEDIAWIKI_ENABLE_EMAIL', true), FILTER_VALIDATE_BOOLEAN);
-$wgEnableUserEmail = filter_var(loadenv('MEDIAWIKI_ENABLE_USER_EMAIL', true), FILTER_VALIDATE_BOOLEAN); # UPO
+$wgEnableEmail = filter_var(loadenv('MW_ENABLE_EMAIL', true), FILTER_VALIDATE_BOOLEAN);
+$wgEnableUserEmail = filter_var(loadenv('MW_ENABLE_USER_EMAIL', true), FILTER_VALIDATE_BOOLEAN); # UPO
 
-$wgEmergencyContact = loadenv('MEDIAWIKI_EMERGENCY_CONTACT', "apache@localhost");
-$wgPasswordSender = loadenv('MEDIAWIKI_PASSWORD_SENDER', "apache@localhost");
+$wgEmergencyContact = loadenv('MW_EMERGENCY_CONTACT', "apache@localhost");
+$wgPasswordSender = loadenv('MW_PASSWORD_SENDER', "apache@localhost");
 
 $wgEnotifUserTalk = false; # UPO
 $wgEnotifWatchlist = false; # UPO
 $wgEmailAuthentication = true;
 
 ## Database settings
-$wgDBtype = loadenv('MEDIAWIKI_DB_TYPE', "mysql");
-$wgDBserver = loadenv('MEDIAWIKI_DB_HOST', "database");
-$wgDBname = loadenv('MEDIAWIKI_DB_NAME', "mediawiki");
-$wgDBuser = loadenv('MEDIAWIKI_DB_USER', "mediawiki");
-$wgDBpassword = loadenv('MEDIAWIKI_DB_PASSWORD', "mediawikipass");
+$wgDBtype = loadenv('MW_DB_TYPE', "mysql");
+$wgDBserver = loadenv('MW_DB_HOST', "database");
+$wgDBname = loadenv('MW_DB_NAME', "mediawiki");
+$wgDBuser = loadenv('MW_DB_USER', "mediawiki");
+$wgDBpassword = loadenv('MW_DB_PASSWORD', "mediawikipass");
+
+## Shared DB Settings
+$wgSharedDB = loadenv('MW_SHARED_DB_NAME');
+$wgSharedPrefix = loadenv('MW_SHARED_DB_PREFIX', false);
+$wgSharedTablesRaw = loadenv('MW_SHARED_DB_TABLES', "actor");
+if (!empty($wgSharedTablesRaw)) {
+	foreach (explode(" ", $wgSharedTablesRaw as $tableName) {
+		# Shared database table
+		# This has no effect unless $wgSharedDB is also set.
+		$wgSharedTables[] = $tableName;
+	}
+	unset($tableName);
+}
+unset($wgSharedTablesRaw);
 
 # MySQL specific settings
-$wgDBprefix = loadenv('MEDIAWIKI_DB_PREFIX');
+$wgDBprefix = loadenv('MW_DB_PREFIX');
 $wgDBssl = false;
 
 # MySQL table options to use during installation or update
-$wgDBTableOptions = loadenv('MEDIAWIKI_DB_TABLE_OPTIONS', "ENGINE=InnoDB, DEFAULT CHARSET=binary");
+$wgDBTableOptions = loadenv('MW_DB_TABLE_OPTIONS', "ENGINE=InnoDB, DEFAULT CHARSET=binary");
 
 # setup debug environment
 if (filter_var(loadenv('DEBUG', false), FILTER_VALIDATE_BOOLEAN)) {
@@ -85,27 +106,24 @@ if (filter_var(loadenv('DEBUG', false), FILTER_VALIDATE_BOOLEAN)) {
     $wgDebugLogGroups = [];
 }
 
-# Shared database table
-# This has no effect unless $wgSharedDB is also set.
-$wgSharedTables[] = "actor";
 
 ## Shared memory settings
-$mainCache = loadenv('MEDIAWIKI_MAIN_CACHE', 'CACHE_ACCEL');
+$mainCache = loadenv('MW_MAIN_CACHE', 'CACHE_ACCEL');
 $wgMainCacheType = defined("$mainCache") ? constant($mainCache) : $mainCache;
 switch ($wgMainCacheType) {
     case CACHE_MEMCACHED:
-        $wgMemCachedServers = json_decode(loadenv('MEDIAWIKI_MEMCACHED_SERVERS', '[]'));
+        $wgMemCachedServers = json_decode(loadenv('MW_MEMCACHED_SERVERS', '[]'));
         break;
     case 'redis':
         $wgObjectCaches['redis'] = [
             'class' => 'RedisBagOStuff',
             'servers' => [
-                loadenv('MEDIAWIKI_REDIS_HOST').':'.loadenv('MEDIAWIKI_REDIS_PORT', 6379)
+                loadenv('MW_REDIS_HOST').':'.loadenv('MW_REDIS_PORT', 6379)
             ],
-            'persistent' => filter_var(loadenv('MEDIAWIKI_REDIS_PERSISTENT', false), FILTER_VALIDATE_BOOLEAN)
+            'persistent' => filter_var(loadenv('MW_REDIS_PERSISTENT', false), FILTER_VALIDATE_BOOLEAN)
 
         ];
-        if (!empty($redis_pwd = loadenv('MEDIAWIKI_REDIS_PASSWORD'))) {
+        if (!empty($redis_pwd = loadenv('MW_REDIS_PASSWORD'))) {
             $wgObjectCaches['redis']['password'] = $redis_pwd;
         }
         break;
@@ -113,65 +131,78 @@ switch ($wgMainCacheType) {
 
 ## To enable image uploads, make sure the 'images' directory
 ## is writable, then set this to true:
-$wgEnableUploads = filter_var(loadenv('MEDIAWIKI_ENABLE_UPLOADS', true), FILTER_VALIDATE_BOOLEAN);
-$wgUseImageMagick = filter_var(loadenv('MEDIAWIKI_ENABLE_IMAGEMAGIK', true), FILTER_VALIDATE_BOOLEAN);
+$wgEnableUploads = filter_var(loadenv('MW_ENABLE_UPLOADS', true), FILTER_VALIDATE_BOOLEAN);
+$wgUseImageMagick = filter_var(loadenv('MW_ENABLE_IMAGEMAGIK', true), FILTER_VALIDATE_BOOLEAN);
 $wgImageMagickConvertCommand = "/usr/bin/convert";
 
 # InstantCommons allows wiki to use images from https://commons.wikimedia.org
-$wgUseInstantCommons = filter_var(loadenv('MEDIAWIKI_ENABLE_INSTANT_COMMONS', true), FILTER_VALIDATE_BOOLEAN);
+$wgUseInstantCommons = filter_var(loadenv('MW_ENABLE_INSTANT_COMMONS', true), FILTER_VALIDATE_BOOLEAN);
 
 # Periodically send a pingback to https://www.mediawiki.org/ with basic data
 # about this MediaWiki instance. The Wikimedia Foundation shares this data
 # with MediaWiki developers to help guide future development efforts.
-$wgPingback = filter_var(loadenv('MEDIAWIKI_ENABLE_PINGBACK', false), FILTER_VALIDATE_BOOLEAN);
+$wgPingback = filter_var(loadenv('MW_ENABLE_PINGBACK', false), FILTER_VALIDATE_BOOLEAN);
 
 # Site language code, should be one of the list in ./includes/languages/data/Names.php
-$wgLanguageCode = loadenv('MEDIAWIKI_LANGUAGE', "en");
+$wgLanguageCode = loadenv('MW_LANGUAGE', "en");
 
 # Time zone
-$wgLocaltimezone = loadenv('MEDIAWIKI_TIMEZONE', "UTC");;
+$wgLocaltimezone = loadenv('MW_TIMEZONE', "UTC");;
 
 ## Set $wgCacheDirectory to a writable directory on the web server
 ## to make your wiki go slightly faster. The directory should not
 ## be publicly accessible from the web.
 #$wgCacheDirectory = "$IP/cache";
 
-$wgSecretKey = loadenv('MEDIAWIKI_SECRET_KEY', null);
+$wgSecretKey = loadenv('MW_SECRET_KEY', null);
 
 # Changing this will log out all existing sessions.
 $wgAuthenticationTokenVersion = "1";
 
 # Site upgrade key. Must be set to a string (default provided) to turn on the
 # web installer while LocalSettings.php is in place
-$wgUpgradeKey = loadenv('MEDIAWIKI_UPGRADE_KEY', null);
+$wgUpgradeKey = loadenv('MW_UPGRADE_KEY', null);
 
 ## For attaching licensing metadata to pages, and displaying an
 ## appropriate copyright notice / icon. GNU Free Documentation
 ## License and Creative Commons licenses are supported so far.
-$wgRightsPage = loadenv('MEDIAWIKI_RIGHTS_PAGE'); # Set to the title of a wiki page that describes your license/copyright
-$wgRightsUrl = loadenv('MEDIAWIKI_RIGHTS_URL', "https://creativecommons.org/licenses/by-sa/4.0/");
-$wgRightsText = loadenv('MEDIAWIKI_RIGHTS_TEXT', "Creative Commons Attribution-ShareAlike");
-$wgRightsIcon = loadenv('MEDIAWIKI_RIGHTS_ICON', "$wgResourceBasePath/resources/assets/licenses/cc-by-sa.png");
+$wgRightsPage = loadenv('MW_RIGHTS_PAGE'); # Set to the title of a wiki page that describes your license/copyright
+$wgRightsUrl = loadenv('MW_RIGHTS_URL', "https://creativecommons.org/licenses/by-sa/4.0/");
+$wgRightsText = loadenv('MW_RIGHTS_TEXT', "Creative Commons Attribution-ShareAlike");
+$wgRightsIcon = loadenv('MW_RIGHTS_ICON', "$wgResourceBasePath/resources/assets/licenses/cc-by-sa.png");
 
 # Path to the GNU diff3 utility. Used for conflict resolution.
 $wgDiff3 = "/usr/bin/diff3";
 
 # The following permissions were set based on your choice in the installer
-$wgGroupPermissions["*"]["createaccount"] = filter_var(loadenv('MEDIAWIKI_ENABLE_PUB_ACCOUNTS', false), FILTER_VALIDATE_BOOLEAN);
-$wgGroupPermissions["*"]["edit"] = filter_var(loadenv('MEDIAWIKI_ENABLE_PUB_EDITS', false), FILTER_VALIDATE_BOOLEAN);
+$wgGroupPermissions["*"]["createaccount"] = filter_var(loadenv('MW_ENABLE_PUB_ACCOUNTS', false), FILTER_VALIDATE_BOOLEAN);
+$wgGroupPermissions["*"]["edit"] = filter_var(loadenv('MW_ENABLE_PUB_EDITS', false), FILTER_VALIDATE_BOOLEAN);
+
+
+# Enabled extensions. Most of the extensions are enabled by adding
+# wfLoadExtension( 'ExtensionName' );
+# to LocalSettings.php. Check specific extension documentation for more details.
+# The following extensions were automatically enabled:
+
+$enabledExtensionsRaw = loadenv('MW_ENABLED_EXTENSIONS', "");
+if (!empty($enabledExtensionsRaw)) {
+	foreach (explode(" ", $enabledExtensionsRaw) as $extension) {
+		wfLoadExtension($extension);
+	}
+	unset($extension);
+}
+unset($enabledExtensionsRaw);
 
 ## Default skin: you can change the default skin. Use the internal symbolic
 ## names, e.g. 'vector' or 'monobook':
-$wgDefaultSkin = loadenv('MEDIAWIKI_DEFAULT_SKIN', "timeless");
+$wgDefaultSkin = loadenv('MW_DEFAULT_SKIN', "timeless");
 
-if (filter_var(loadenv('MEDIAWIKI_MOBILE_FRONTEND_ENABLED', false), FILTER_VALIDATE_BOOLEAN)){
-	$wgDefaultMobileSkin = loadenv('MEDIAWIKI_DEFAULT_MOBILE_SKIN', "timeless");
+if (filter_var(loadenv('MW_MOBILE_FRONTEND_ENABLED', false), FILTER_VALIDATE_BOOLEAN)){
+	$wgDefaultMobileSkin = loadenv('MW_DEFAULT_MOBILE_SKIN', "timeless");
 	wfLoadExtension('MobileFrontend');
 }
 
-
-
-$enabledSkinsRaw = loadenv('MEDIAWIKI_ENABLED_SKINS', "Timeless");
+$enabledSkinsRaw = loadenv('MW_ENABLED_SKINS', "Timeless");
 if (!empty($enabledSkinsRaw)){
 	foreach (explode(" ", $enabledSkinsRaw) as $skin){
 		wfLoadSkin($skin);
@@ -182,20 +213,6 @@ if (!empty($enabledSkinsRaw)){
 }
 unset($enabledSkinsRaw);
 
-
-# Enabled extensions. Most of the extensions are enabled by adding
-# wfLoadExtension( 'ExtensionName' );
-# to LocalSettings.php. Check specific extension documentation for more details.
-# The following extensions were automatically enabled:
-
-$enabledExtensionsRaw = loadenv('MEDIAWIKI_ENABLED_EXTENSIONS', "");
-if (!empty($enabledExtensionsRaw)) {
-	foreach (explode(" ", $enabledExtensionsRaw) as $extension) {
-		wfLoadExtension($extension);
-	}
-	unset($extension);
-}
-unset($enabledExtensionsRaw);
 # End of automatically generated settings.
 # Add more configuration options below.
 include_once("/conf/CustomSettings.php");
