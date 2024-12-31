@@ -80,7 +80,7 @@ $wgSharedDB = loadenv('MW_SHARED_DB_NAME');
 $wgSharedPrefix = loadenv('MW_SHARED_DB_PREFIX', false);
 $wgSharedTablesRaw = loadenv('MW_SHARED_DB_TABLES', "actor");
 if (!empty($wgSharedTablesRaw)) {
-	foreach (explode(" ", $wgSharedTablesRaw as $tableName) {
+	foreach (explode(" ", $wgSharedTablesRaw) as $tableName) {
 		# Shared database table
 		# This has no effect unless $wgSharedDB is also set.
 		$wgSharedTables[] = $tableName;
