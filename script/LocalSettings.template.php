@@ -45,15 +45,16 @@ $wgCookieDomain = loadenv('MW_COOKIE_DOMAIN', '');
 
 $logoPath = loadenv('MW_LOGO_PATH', "$wgResourceBasePath/resources/assets");
 $logoFilenameIcon = loadenv('MW_LOGO_ICON', "logo.png");
-$logoFilenameIcon = loadenv('MW_LOGO_1X', "logo.png");
-$logoFilenameIcon = loadenv('MW_LOGO_2X', "logo.png");
+$logoFilename1x = loadenv('MW_LOGO_1X', "logo.png");
+$logoFilename2x = loadenv('MW_LOGO_2X', "logo.png");
 ## The URL paths to the logo.  Make sure you change this from the default,
 ## or else you'll overwrite your logo when you upgrade!
 $wgLogos = [
-	'icon' => "$logoPath/$MW_LOGO_ICON",
-	'1x' => "$logoPath/$MW_LOGO_1X",
-	'2x' => "$logoPath/$MW_LOGO_2X",
+	'icon' => "$logoPath/$logoFilenameIcon",
+	'1x' => "$logoPath/$logoFilename1x",
+	'2x' => "$logoPath/$logoFilename2x",
 ];
+unset($logoPath, $logoFilenameIcon, $logoFilename1x, $logoFilename2x);
 
 ## UPO means: this is also a user preference option
 
@@ -215,4 +216,4 @@ unset($enabledSkinsRaw);
 
 # End of automatically generated settings.
 # Add more configuration options below.
-include_once("/conf/CustomSettings.php");
+include_once(loadenv('MW_CUSTOMSETTINGS_OVERRIDE', "/conf/CustomSettings.php"));
