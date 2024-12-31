@@ -5,7 +5,7 @@
 services:
   mediawiki:
     #image: mediawiki
-    build: ./docker
+    build: ./.docker
     depends_on:
       - database
     restart: always
