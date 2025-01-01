@@ -2,8 +2,8 @@
 set -eu
 oldDir="$PWD"
 scriptDir=$(dirname "$0")
-cd "../$scriptDir"
-
+cd $scriptDir
+cd ..
 if [ "$#" -ne 1 ]; then
   databaseService="database"
   exit 1

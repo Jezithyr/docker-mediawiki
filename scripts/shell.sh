@@ -2,7 +2,8 @@
 set -eu
 oldDir="$PWD"
 scriptDir=$(dirname "$0")
-cd "../$scriptDir"
+cd $scriptDir
+cd ..
 if [ "$#" -ne 1 ]; then
   echo "Usage: $0 <service name>" >&2
   echo "where <service name> is the name of the service in your docker-compose.yaml" >&2

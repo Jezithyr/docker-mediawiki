@@ -2,10 +2,11 @@
 set -eu
 oldDir="$PWD"
 scriptDir=$(dirname "$0")
-cd "../$scriptDir"
+cd $scriptDir
+cd ..
 if [ "$#" -ne 1 ]; then
   echo "No service specified running update on ALL wikis" >&2
-  containerNames=$(docker compose ps | awk '{if(NR>1) print $NF}')
+  containerNames=$(docker compose ps --services)
   for containerName in $containerNames; do
     if (docker compose exec $containerName  "test -f /var/www/mediawiki/maintenance/update.php"); then 
 		echo "Running update for $containerName"
