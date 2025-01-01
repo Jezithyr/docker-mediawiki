@@ -18,7 +18,7 @@ services:
       - ./volumes/extensions:/var/www/html/extensions
       - ./volumes/skins:/var/www/html/skins
       - ./logo.png:/var/www/html/resources/assets/logo.png
-      - ./config:/root/config
+      - ./config:/config
     environment:
       DEBUG: true
       MW_SITE_NAME: "mediawiki"

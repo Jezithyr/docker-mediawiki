@@ -46,4 +46,6 @@ if [ -n "${MEDIAWIKI_ENABLED_EXTENSIONS}" ]; then
 		fi
 	done
 fi
+chmod -R 775 /config
+
 exec /usr/local/bin/docker-php-entrypoint "$@"

@@ -216,4 +216,4 @@ unset($enabledSkinsRaw);
 
 # End of automatically generated settings.
 # Add more configuration options below.
-include_once(loadenv('MW_CUSTOMSETTINGS_OVERRIDE', "/root/config/CustomSettings.php"));
+include_once(loadenv('MW_CUSTOMSETTINGS_OVERRIDE', "/config/CustomSettings.php"));
