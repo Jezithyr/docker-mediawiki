@@ -53,8 +53,8 @@ services:
     volumes:
       - db:/var/lib/mysql
    ## Uncomment this if and create the file in this directory to reset the root password or run sql on db start
-   #   - ./sql-init.sql:/sql-init.sql
-   #  command: --init-file=/sql-init.sql
+   #   - ./sql-init.sql:/tmp/sql-init.sql
+   #  command: --init-file=/tmp/sql-init.sql
 volumes:
   db:
   images:
