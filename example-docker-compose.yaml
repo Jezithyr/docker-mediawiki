@@ -52,6 +52,9 @@ services:
       #MYSQL_ROOT_PASSWORD: 'definately_should_change_me'
     volumes:
       - db:/var/lib/mysql
+   ## Uncomment this if and create the file in this directory to reset the root password or run sql on db start
+   #   - ./sql-init.sql:/sql-init.sql
+   #  command: --init-file=/sql-init.sql
 volumes:
   db:
   images:
