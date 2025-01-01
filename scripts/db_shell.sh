@@ -9,5 +9,5 @@ if [ "$#" -ne 1 ]; then
   exit 1
 fi
 databaseService=$1
-docker exec $databaseService sh -c "mysql -u root -p"
+docker exec $databaseService sh -c mysql -u root -p
 cd $oldDir
