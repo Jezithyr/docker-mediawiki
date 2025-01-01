@@ -8,7 +8,7 @@ if [ "$#" -ne 1 ]; then
   echo "No service specified running update on ALL wikis" >&2
   containerNames=$(docker compose ps --services)
   for containerName in $containerNames; do
-    if (docker compose exec $containerName  test -f /var/www/mediawiki/maintenance/update.php); then 
+    if [ "$(docker compose exec $containerName  test -f /var/www/mediawiki/maintenance/update.php && echo 'true')" = 'true' ]; then 
 		echo "Running update for $containerName"
 		docker compose exec $containerName  php /var/www/mediawiki/maintenance/update.php --quick
 	fi
