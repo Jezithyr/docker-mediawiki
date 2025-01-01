@@ -11,5 +11,5 @@ if [ "$#" -ne 1 ]; then
 fi
 
 WIKISERVICE=$1
-docker compose exec $WIKISERVICE php /var/www/html/maintenance/update.php --quick
+docker compose exec $WIKISERVICE php /var/www/html/maintenance/run.php update --quick
 cd $oldDir
